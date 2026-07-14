@@ -14,13 +14,13 @@ The launcher only support a limited number of platforms including
 
 - Windows (amd64)
 - Linux (amd64, armv6/7, arm64)
-- MacOS (amd64)
+- MacOS (amd64, arm64 / Apple Silicon)
 
 
 
 ## Build
 
-Require Go 1.17 or above
+Require Go 1.24 or above
 
 ```
 git clone https://github.com/aroz-online/launcher

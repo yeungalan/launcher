@@ -7,6 +7,11 @@ for %%I in (.) do SET EXENAME=%%~nxI
 go build
 MOVE "%EXENAME%" "%EXENAME%_darwin_amd64"
 
+set GOOS=darwin
+set GOARCH=arm64
+go build
+MOVE "%EXENAME%" "%EXENAME%_darwin_arm64"
+
 echo "Building linux"
 set GOOS=linux
 set GOARCH=amd64

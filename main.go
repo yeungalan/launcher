@@ -50,6 +50,7 @@ func main() {
 	//Register the binary start path
 	cmd := exec.Command(binaryName, os.Args[1:]...)
 	cmd.Dir = filepath.Dir(binaryName)
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
@@ -70,12 +71,22 @@ func main() {
 		err := cmd.Run()
 		endTime := time.Now().Unix()
 
-		if err != nil {
-			panic(err)
-		}
+		//If the user only requested help / version info, do not restart
+		//regardless of how the child process exited.
 		if norestart {
 			return
 		}
+
+		//Always report how the child process exited. A silent, immediate
+		//exit used to be impossible to diagnose; now the exit code (or the
+		//signal that killed it, or a start-up error such as a missing
+		//execute permission / quarantined binary on macOS) is always logged.
+		if err != nil {
+			fmt.Println("[LAUNCHER] ArozOS exited with error: " + err.Error())
+		} else if cmd.ProcessState != nil {
+			fmt.Printf("[LAUNCHER] ArozOS exited with code %d\n", cmd.ProcessState.ExitCode())
+		}
+
 		if endTime-startTime < 3 {
 			//Less than 3 seconds, shd be crashed. Add to retry counter
 			fmt.Println("[LAUNCHER] ArozOS Crashed. Restarting in 3 seconds... ")
@@ -100,6 +111,8 @@ func main() {
 
 		//Rebuild the start paramters
 		cmd = exec.Command(binaryName, os.Args[1:]...)
+		cmd.Dir = filepath.Dir(binaryName)
+		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}

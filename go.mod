@@ -1,5 +1,5 @@
 module imuslab.com/arozos/launcher
 
-go 1.17
+go 1.24
 
-require github.com/otiai10/copy v1.7.0 // indirect
+require github.com/otiai10/copy v1.7.0
